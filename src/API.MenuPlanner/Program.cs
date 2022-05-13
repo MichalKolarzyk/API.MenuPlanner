@@ -15,6 +15,14 @@ builder.Services.Configure<MenuPlannerDatabaseSettings>(
 
 
 builder.Services.AddSingleton<DishService>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "localhost",
+                      policy =>
+                      {
+                          policy.WithOrigins(builder.Configuration.GetSection("AllowedHosts").Value);
+                      });
+});
 
 var app = builder.Build();
 
@@ -24,9 +32,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 app.UseHttpsRedirection();
 
+app.UseCors("localhost");
 app.UseAuthorization();
 
 app.MapControllers();
