@@ -15,12 +15,14 @@ builder.Services.Configure<MenuPlannerDatabaseSettings>(
 
 
 builder.Services.AddSingleton<DishService>();
+builder.Services.AddSingleton<RecipeService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "localhost",
                       policy =>
                       {
-                          policy.WithOrigins(builder.Configuration.GetSection("AllowedHosts").Value);
+                          //policy.WithOrigins(builder.Configuration.GetSection("AllowedHosts").Value);
+                          policy.AllowAnyOrigin();
                       });
 });
 

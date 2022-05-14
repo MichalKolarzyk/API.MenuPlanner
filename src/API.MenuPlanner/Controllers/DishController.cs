@@ -1,4 +1,5 @@
-﻿using API.MenuPlanner.Models;
+﻿using API.MenuPlanner.Agregates;
+using API.MenuPlanner.Models;
 using API.MenuPlanner.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,16 +23,16 @@ namespace API.MenuPlanner.Controllers
         }
 
         [HttpGet("{id:length(24)}")]
-        public async Task<ActionResult<Dish>> Get(string id)
+        public async Task<ActionResult<DishAgregate>> Get(string id)
         {
-            var book = await _dishService.GetAsync(id);
+            var dish = await _dishService.GetAsync(id);
 
-            if (book is null)
+            if (dish is null)
             {
                 return NotFound();
             }
 
-            return book;
+            return dish;
         }
 
         [HttpPost]

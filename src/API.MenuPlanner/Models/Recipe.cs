@@ -3,13 +3,13 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace API.MenuPlanner.Models
 {
-    public class Dish
+    public class Recipe
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
-
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string? RecipeId { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public List<string> Steps { get; set; } = new List<string>();
     }
 }
