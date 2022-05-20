@@ -1,4 +1,5 @@
 ﻿using API.MenuPlanner.Models;
+using API.MenuPlanner.Repositories;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
@@ -6,18 +7,15 @@ namespace API.MenuPlanner.Services
 {
     public class RecipeService
     {
-        private readonly IMongoCollection<Recipe> _recipeCollection;
+        private readonly IRepository<Recipe> _recipeRepository;
 
-        public RecipeService(IOptions<MenuPlannerDatabaseSettings> databaseSettings)
+        public RecipeService(IRepository<Recipe> recipeRepository)
         {
-            var mongoClient = new MongoClient(databaseSettings.Value.ConnectionString);
-            var mongoDatabase = mongoClient.GetDatabase(databaseSettings.Value.DatabaseName);
-            _recipeCollection = mongoDatabase.GetCollection<Recipe>(databaseSettings.Value.RecipeCollectionName);
+            _recipeRepository = recipeRepository;
         }
-
         public async Task CreateAsync(Recipe newRecipe)
         {
-            await _recipeCollection.InsertOneAsync(newRecipe);
+            await _recipeRepository.AddAsync(newRecipe);
         }
     }
 }

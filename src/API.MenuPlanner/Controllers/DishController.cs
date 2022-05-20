@@ -43,36 +43,36 @@ namespace API.MenuPlanner.Controllers
             return CreatedAtAction(nameof(Get), new { id = newDish.Id }, newDish);
         }
 
-        [HttpPut("{id:length(24)}")]
-        public async Task<IActionResult> Update(string id, Dish updatedDish)
-        {
-            var book = await _dishService.GetAsync(id);
+        //[HttpPut("{id:length(24)}")]
+        //public async Task<IActionResult> Update(string id, Dish updatedDish)
+        //{
+        //    var book = await _dishService.GetAsync(id);
 
-            if (book is null)
-            {
-                return NotFound();
-            }
+        //    if (book is null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            updatedDish.Id = book.Id;
+        //    updatedDish.Id = book.Id;
 
-            await _dishService.UpdateAsync(id, updatedDish);
+        //    await _dishService.UpdateAsync(id, updatedDish);
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
-        [HttpDelete("{id:length(24)}")]
-        public async Task<IActionResult> Delete(string id)
-        {
-            var book = await _dishService.GetAsync(id);
+        //[HttpDelete("{id:length(24)}")]
+        //public async Task<IActionResult> Delete(string id)
+        //{
+        //    var book = await _dishService.GetAsync(id);
 
-            if (book is null)
-            {
-                return NotFound();
-            }
+        //    if (book is null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            await _dishService.RemoveAsync(id);
+        //    await _dishService.RemoveAsync(id);
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
     }
 }

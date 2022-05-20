@@ -1,4 +1,6 @@
+using API.MenuPlanner.Database;
 using API.MenuPlanner.Models;
+using API.MenuPlanner.Repositories;
 using API.MenuPlanner.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +15,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<MenuPlannerDatabaseSettings>(
     builder.Configuration.GetSection("MenuPlannerDatabase"));
 
-
+builder.Services.AddSingleton<IMongoDbContext, MongoDbContext>();
+builder.Services.AddSingleton<IRepository<Dish>, DishRepository>();
+builder.Services.AddSingleton<IRepository<Recipe>, RecipeRepository>();
 builder.Services.AddSingleton<DishService>();
 builder.Services.AddSingleton<RecipeService>();
 builder.Services.AddCors(options =>
