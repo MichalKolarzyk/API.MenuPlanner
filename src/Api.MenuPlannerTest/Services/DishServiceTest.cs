@@ -17,11 +17,11 @@ namespace Api.MenuPlannerTest.Services
     public class DishServiceTest
     {
         private DishService? _dishService;
-        private RepositoryTestBase<Dish>? _dishRepository;
-        private RepositoryTestBase<Recipe>? _recipeRepository;
+        private RepositoryTestBase<Dish> _dishRepository;
+        private RepositoryTestBase<Recipe> _recipeRepository;
 
-        private List<Dish>? _dishes;
-        private List<Recipe>? _recipes;
+        private List<Dish> _dishes;
+        private List<Recipe> _recipes;
         private async Task Initialize()
         {
             _dishRepository = new RepositoryTestBase<Dish>();
@@ -51,6 +51,14 @@ namespace Api.MenuPlannerTest.Services
 
             dishAgregate?.Recipe.Should().NotBeNull();
             dishAgregate.Recipe.Id.Should().BeEquivalentTo("recipe1");
+            dishAgregate.Recipe.Description.Should().BeEquivalentTo("description recipe 1");
+        }
+
+        [Fact]
+        public async void ShouldThrowExceptionWhenIdNotFound()
+        {
+            await Initialize();
+            Assert.Throws(typeof(AggregateException),() => _dishService.GetAsync("IdThatNotExists").Result);
         }
     }
 }
