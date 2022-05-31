@@ -1,4 +1,4 @@
-﻿using API.MenuPlanner.Models;
+﻿using API.MenuPlanner.Entities;
 using API.MenuPlanner.Repositories;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;

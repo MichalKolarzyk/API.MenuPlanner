@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace API.MenuPlanner.Models
+namespace API.MenuPlanner.Entities
 {
     public class Recipe
     {

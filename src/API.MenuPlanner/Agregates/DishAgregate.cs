@@ -1,4 +1,4 @@
-﻿using API.MenuPlanner.Models;
+﻿using API.MenuPlanner.Entities;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 

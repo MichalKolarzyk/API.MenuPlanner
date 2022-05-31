@@ -1,4 +1,4 @@
-﻿namespace API.MenuPlanner.Models
+﻿namespace API.MenuPlanner.Entities
 {
     public class MenuPlannerDatabaseSettings
     {

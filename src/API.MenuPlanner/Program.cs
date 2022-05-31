@@ -1,5 +1,5 @@
 using API.MenuPlanner.Database;
-using API.MenuPlanner.Models;
+using API.MenuPlanner.Entities;
 using API.MenuPlanner.Repositories;
 using API.MenuPlanner.Services;
 

@@ -1,5 +1,5 @@
 ﻿using API.MenuPlanner.Database;
-using API.MenuPlanner.Models;
+using API.MenuPlanner.Entities;
 using MongoDB.Driver;
 using System.Linq.Expressions;
 

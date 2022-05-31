@@ -1,4 +1,4 @@
-﻿using API.MenuPlanner.Models;
+﻿using API.MenuPlanner.Entities;
 using API.MenuPlanner.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,5 +22,11 @@ namespace API.MenuPlanner.Controllers
             //return CreatedAtAction(nameof(Get), new { id = newDish.Id }, newDish);
             return Ok(newRecipe);
         }
+
+        //[HttpPut]
+        //public async Task<IActionResult> Put(Recipe updatedRecipe)
+        //{
+
+        //}
     }
 }

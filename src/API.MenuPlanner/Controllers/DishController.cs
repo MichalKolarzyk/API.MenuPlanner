@@ -1,5 +1,5 @@
 ﻿using API.MenuPlanner.Agregates;
-using API.MenuPlanner.Models;
+using API.MenuPlanner.Entities;
 using API.MenuPlanner.Services;
 using Microsoft.AspNetCore.Mvc;
 
