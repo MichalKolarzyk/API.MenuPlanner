@@ -18,6 +18,7 @@ builder.Services.Configure<MenuPlannerDatabaseSettings>(
 builder.Services.AddSingleton<IMongoDbContext, MongoDbContext>();
 builder.Services.AddSingleton<IRepository<Dish>, DishRepository>();
 builder.Services.AddSingleton<IRepository<Recipe>, RecipeRepository>();
+builder.Services.AddSingleton<IRepository<Tag>, TagRepository>();
 builder.Services.AddSingleton<DishService>();
 builder.Services.AddSingleton<RecipeService>();
 builder.Services.AddCors(options =>
@@ -27,6 +28,8 @@ builder.Services.AddCors(options =>
                       {
                           //policy.WithOrigins(builder.Configuration.GetSection("AllowedHosts").Value);
                           policy.AllowAnyOrigin();
+                          policy.AllowAnyMethod();
+                          policy.AllowAnyHeader();
                       });
 });
 

@@ -30,5 +30,10 @@ namespace Api.MenuPlannerTest
         {
             return Task.Run(() => _collection.FirstOrDefault(expression.Compile()));
         }
+
+        public Task ReplaceOneAsync(Expression<Func<T, bool>> filter, T updatedItem)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

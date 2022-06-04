@@ -23,7 +23,7 @@ namespace API.MenuPlanner.Controllers
         }
 
         [HttpGet("{id:length(24)}")]
-        public async Task<ActionResult<DishAgregate>> Get(string id)
+        public async Task<ActionResult<DishDto>> Get(string id)
         {
             var dish = await _dishService.GetAsync(id);
 

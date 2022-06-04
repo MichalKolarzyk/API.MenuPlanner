@@ -47,7 +47,7 @@ namespace Api.MenuPlannerTest.Services
         public async void ShouldReturnGoodDishAgregate()
         {
             await Initialize();
-            DishAgregate dishAgregate = await _dishService.GetAsync("dish1");
+            DishDto dishAgregate = await _dishService.GetAsync("dish1");
 
             dishAgregate?.Recipe.Should().NotBeNull();
             dishAgregate.Recipe.Id.Should().BeEquivalentTo("recipe1");

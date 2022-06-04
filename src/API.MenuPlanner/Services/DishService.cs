@@ -22,9 +22,9 @@ namespace API.MenuPlanner.Services
         {
             return await _dishRepository.FindAsync(_ => true);
         }
-        public async Task<DishAgregate?> GetAsync(string id)
+        public async Task<DishDto?> GetAsync(string id)
         {
-            DishAgregate dishAgregate = new DishAgregate();
+            DishDto dishAgregate = new DishDto();
             Dish dish = await _dishRepository.FirstOrDefaultAsync(x => x.Id == id);
             if (dish == null)
                 throw new Exception($"Not found dish with id {id}");

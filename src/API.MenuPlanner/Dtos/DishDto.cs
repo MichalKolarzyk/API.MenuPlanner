@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace API.MenuPlanner.Agregates
 {
-    public class DishAgregate
+    public class DishDto
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
