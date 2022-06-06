@@ -1,6 +1,8 @@
-﻿using API.MenuPlanner.Entities;
+﻿using API.MenuPlanner.Dtos;
+using API.MenuPlanner.Entities;
 using API.MenuPlanner.Requests;
 using API.MenuPlanner.Services;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.MenuPlanner.Controllers
@@ -50,5 +52,19 @@ namespace API.MenuPlanner.Controllers
             await _recipeService.DeleteRecipeAsync(id);
             return NoContent();
         }
+
+        [Route("/error")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public IActionResult HendleError([FromServices] IHostEnvironment hostEnvironment)
+        {
+            var exceptionHandlerFeature = HttpContext.Features.Get<IExceptionHandlerFeature>();
+
+            
+
+            return Problem(
+                detail: exceptionHandlerFeature.Error.Message,
+                title: exceptionHandlerFeature.Error.Source);
+        }
+
     }
 }

@@ -12,6 +12,6 @@ namespace API.MenuPlanner.Repositories
     {
         public RecipeRepository(IMongoDbContext mongoDbContext) : base(mongoDbContext, "Recipes")
         {
-        } 
+        }
     }
 }

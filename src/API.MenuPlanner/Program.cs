@@ -2,6 +2,7 @@ using API.MenuPlanner.Database;
 using API.MenuPlanner.Entities;
 using API.MenuPlanner.Repositories;
 using API.MenuPlanner.Services;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,8 +20,12 @@ builder.Services.AddSingleton<IMongoDbContext, MongoDbContext>();
 builder.Services.AddSingleton<IRepository<Dish>, DishRepository>();
 builder.Services.AddSingleton<IRepository<Recipe>, RecipeRepository>();
 builder.Services.AddSingleton<IRepository<Tag>, TagRepository>();
+builder.Services.AddSingleton<IRepository<User>, UserRepository>();
 builder.Services.AddSingleton<DishService>();
 builder.Services.AddSingleton<RecipeService>();
+builder.Services.AddSingleton<UserService>();
+builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "localhost",
@@ -42,9 +47,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseHttpsRedirection();
-
 app.UseCors("localhost");
 app.UseAuthorization();
+
+app.UseExceptionHandler("/error");
 
 app.MapControllers();
 
