@@ -59,11 +59,9 @@ namespace API.MenuPlanner.Controllers
         {
             var exceptionHandlerFeature = HttpContext.Features.Get<IExceptionHandlerFeature>();
 
-            
-
             return Problem(
-                detail: exceptionHandlerFeature.Error.Message,
-                title: exceptionHandlerFeature.Error.Source);
+                detail: exceptionHandlerFeature?.Error.Message,
+                title: exceptionHandlerFeature?.Error.Source);
         }
 
     }

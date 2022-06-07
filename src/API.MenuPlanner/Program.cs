@@ -1,11 +1,43 @@
+using API.MenuPlanner;
 using API.MenuPlanner.Database;
 using API.MenuPlanner.Entities;
 using API.MenuPlanner.Repositories;
 using API.MenuPlanner.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+IConfigurationSection menuPlannerDatabaseSection = builder.Configuration.GetSection(AppSettingsModels.SectionNames.MenuPlannerDatabase);
+IConfigurationSection authenticationSettingsSection = builder.Configuration.GetSection(AppSettingsModels.SectionNames.AuthenticationSettings);
+
+AppSettingsModels.AuthenticationSettings authenticationSettings = new AppSettingsModels.AuthenticationSettings();
+authenticationSettingsSection.Bind(authenticationSettings);
+
+builder.Services.AddAuthentication(option =>
+{
+    option.DefaultAuthenticateScheme = "Bearer";
+    option.DefaultScheme = "Bearer";
+    option.DefaultChallengeScheme = "Bearer";
+}).AddJwtBearer(cfg =>
+{
+    cfg.RequireHttpsMetadata = false;
+    cfg.SaveToken = true;
+    cfg.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidIssuer = authenticationSettings.JwtIssuer,
+        ValidAudience = authenticationSettings.JwtIssuer,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey)),
+    };
+});
+
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("Admin", builder => builder.RequireRole("Admin"));
+//    options.AddPolicy("Creator", builder => builder.RequireRole("Admin", "Creator"));
+//    options.AddPolicy("Viewer", builder => builder.RequireRole("Admin", "Creator", "Viewer"));
+//});
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -13,9 +45,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.Configure<MenuPlannerDatabaseSettings>(
-    builder.Configuration.GetSection("MenuPlannerDatabase"));
+builder.Services.Configure<MenuPlannerDatabaseSettings>(menuPlannerDatabaseSection);
 
+builder.Services.AddAuthorization();
 builder.Services.AddSingleton<IMongoDbContext, MongoDbContext>();
 builder.Services.AddSingleton<IRepository<Dish>, DishRepository>();
 builder.Services.AddSingleton<IRepository<Recipe>, RecipeRepository>();
@@ -25,6 +57,7 @@ builder.Services.AddSingleton<DishService>();
 builder.Services.AddSingleton<RecipeService>();
 builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddSingleton(authenticationSettings);
 
 builder.Services.AddCors(options =>
 {
@@ -38,6 +71,8 @@ builder.Services.AddCors(options =>
                       });
 });
 
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -49,7 +84,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("localhost");
 app.UseAuthorization();
-
+app.UseAuthentication();
 app.UseExceptionHandler("/error");
 
 app.MapControllers();
