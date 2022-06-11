@@ -1,6 +1,7 @@
-﻿using API.MenuPlanner.Agregates;
+﻿using API.MenuPlanner.Dtos;
 using API.MenuPlanner.Entities;
 using API.MenuPlanner.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.MenuPlanner.Controllers
@@ -16,63 +17,19 @@ namespace API.MenuPlanner.Controllers
             _dishService = dishService;
         }
 
-        [HttpGet]
-        public async Task<List<Dish>> Get()
-        {
-            return await _dishService.GetAsync();
-        }
-
-        [HttpGet("{id:length(24)}")]
-        public async Task<ActionResult<DishDto>> Get(string id)
-        {
-            var dish = await _dishService.GetAsync(id);
-
-            if (dish is null)
-            {
-                return NotFound();
-            }
-
-            return dish;
-        }
-
         [HttpPost]
-        public async Task<IActionResult> Post(Dish newDish)
+        [Authorize]
+        public async Task<ActionResult<List<DishDto.ResponseModel>>> Get(GetDishesRequest request)
         {
-            await _dishService.CreateAsync(newDish);
-
-            return CreatedAtAction(nameof(Get), new { id = newDish.Id }, newDish);
+            return await _dishService.GetAsync(request);
         }
 
-        //[HttpPut("{id:length(24)}")]
-        //public async Task<IActionResult> Update(string id, Dish updatedDish)
-        //{
-        //    var book = await _dishService.GetAsync(id);
+        [HttpPost("create")]
+        public async Task<IActionResult> Create(DishDto.RequestModel newDish)
+        {
+            string id =await _dishService.CreateAsync(newDish);
 
-        //    if (book is null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    updatedDish.Id = book.Id;
-
-        //    await _dishService.UpdateAsync(id, updatedDish);
-
-        //    return NoContent();
-        //}
-
-        //[HttpDelete("{id:length(24)}")]
-        //public async Task<IActionResult> Delete(string id)
-        //{
-        //    var book = await _dishService.GetAsync(id);
-
-        //    if (book is null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    await _dishService.RemoveAsync(id);
-
-        //    return NoContent();
-        //}
+            return CreatedAtAction(nameof(Get), new { id = id });
+        }
     }
 }

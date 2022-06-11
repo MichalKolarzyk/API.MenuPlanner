@@ -2,6 +2,7 @@
 using API.MenuPlanner.Entities;
 using API.MenuPlanner.Requests;
 using API.MenuPlanner.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +19,7 @@ namespace API.MenuPlanner.Controllers
         }
 
         [HttpGet("{id:length(24)}")]
+        [Authorize]
         public async Task<ActionResult<Recipe>> Get(string id)
         {
             Recipe recipe = await _recipeService.GetRecipeAsync(id);
@@ -25,6 +27,7 @@ namespace API.MenuPlanner.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<List<Recipe>>> Get([FromBody] GetRecipesRequest request)
         {
             List<Recipe> recipes = await _recipeService.GetRecipesAsync(request);
@@ -32,6 +35,7 @@ namespace API.MenuPlanner.Controllers
         }
 
         [HttpPost("new")]
+        [Authorize]
         public async Task<ActionResult<Recipe>> Create(Recipe newRecipe)
         {
             await _recipeService.CreateAsync(newRecipe);
@@ -40,6 +44,7 @@ namespace API.MenuPlanner.Controllers
 
 
         [HttpPut]
+        [Authorize]
         public async Task<IActionResult> Update([FromBody] Recipe updatedRecipe)
         {
             await _recipeService.UpdateRecipeAsync(updatedRecipe);
@@ -47,6 +52,7 @@ namespace API.MenuPlanner.Controllers
         }
 
         [HttpDelete]
+        [Authorize]
         public async Task<IActionResult> Delete(string id)
         {
             await _recipeService.DeleteRecipeAsync(id);

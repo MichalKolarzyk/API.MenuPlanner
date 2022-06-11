@@ -8,8 +8,20 @@ namespace API.MenuPlanner.Entities
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
+        public string UserId { get; set; } = string.Empty;
+        public DishTypeEnum DishType { get; set; }
+        public DateTime Day { get; set; }
+        public string RecipeId { get; set; } = string.Empty;
 
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string? RecipeId { get; set; }
+
+        public enum DishTypeEnum
+        {
+            starter,
+            breakfast,
+            lunch,
+            snack,
+            dinner,
+            supper,
+        }
     }
 }

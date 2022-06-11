@@ -15,6 +15,33 @@ IConfigurationSection authenticationSettingsSection = builder.Configuration.GetS
 AppSettingsModels.AuthenticationSettings authenticationSettings = new AppSettingsModels.AuthenticationSettings();
 authenticationSettingsSection.Bind(authenticationSettings);
 
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("Admin", builder => builder.RequireRole("Admin"));
+//    options.AddPolicy("Creator", builder => builder.RequireRole("Admin", "Creator"));
+//    options.AddPolicy("Viewer", builder => builder.RequireRole("Admin", "Creator", "Viewer"));
+//});
+// Add services to the container.
+
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.Configure<MenuPlannerDatabaseSettings>(menuPlannerDatabaseSection);
+
+//builder.Services.AddAuthorization();
+builder.Services.AddSingleton<IMongoDbContext, MongoDbContext>();
+builder.Services.AddSingleton<IRepository<Dish>, DishRepository>();
+builder.Services.AddSingleton<IRepository<Recipe>, RecipeRepository>();
+builder.Services.AddSingleton<IRepository<Tag>, TagRepository>();
+builder.Services.AddSingleton<IRepository<User>, UserRepository>();
+builder.Services.AddSingleton<DishService>();
+builder.Services.AddSingleton<RecipeService>();
+builder.Services.AddSingleton<UserService>();
+builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddSingleton(authenticationSettings);
+
 builder.Services.AddAuthentication(option =>
 {
     option.DefaultAuthenticateScheme = "Bearer";
@@ -31,33 +58,6 @@ builder.Services.AddAuthentication(option =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey)),
     };
 });
-
-//builder.Services.AddAuthorization(options =>
-//{
-//    options.AddPolicy("Admin", builder => builder.RequireRole("Admin"));
-//    options.AddPolicy("Creator", builder => builder.RequireRole("Admin", "Creator"));
-//    options.AddPolicy("Viewer", builder => builder.RequireRole("Admin", "Creator", "Viewer"));
-//});
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.Configure<MenuPlannerDatabaseSettings>(menuPlannerDatabaseSection);
-
-builder.Services.AddAuthorization();
-builder.Services.AddSingleton<IMongoDbContext, MongoDbContext>();
-builder.Services.AddSingleton<IRepository<Dish>, DishRepository>();
-builder.Services.AddSingleton<IRepository<Recipe>, RecipeRepository>();
-builder.Services.AddSingleton<IRepository<Tag>, TagRepository>();
-builder.Services.AddSingleton<IRepository<User>, UserRepository>();
-builder.Services.AddSingleton<DishService>();
-builder.Services.AddSingleton<RecipeService>();
-builder.Services.AddSingleton<UserService>();
-builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
-builder.Services.AddSingleton(authenticationSettings);
 
 builder.Services.AddCors(options =>
 {
@@ -83,8 +83,8 @@ if (app.Environment.IsDevelopment())
 }
 app.UseHttpsRedirection();
 app.UseCors("localhost");
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
 app.UseExceptionHandler("/error");
 
 app.MapControllers();

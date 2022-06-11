@@ -1,9 +1,11 @@
-﻿using API.MenuPlanner.Agregates;
+﻿using API.MenuPlanner.Dtos;
 using API.MenuPlanner.Database;
 using API.MenuPlanner.Entities;
 using API.MenuPlanner.Repositories;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using System.Linq.Expressions;
+using API.MenuPlanner.Helpers;
 
 namespace API.MenuPlanner.Services
 {
@@ -18,37 +20,52 @@ namespace API.MenuPlanner.Services
             _recipeRepository = recipeRepository;
         }
 
-        public async Task<List<Dish>> GetAsync()
+        public async Task<List<DishDto.ResponseModel>> GetAsync(GetDishesRequest request)
         {
-            return await _dishRepository.FindAsync(_ => true);
+            DateTime firstDay = DateHelper.ToDateTime(request.FirstDay);
+            DateTime LastDay = firstDay.AddDays(request.NumberOfDays);
+
+            Expression<Func<Dish, bool>> predicate =
+                d => request.UserIds.Contains(d.UserId)
+                && d.Day >= firstDay
+                && d.Day <= LastDay;
+
+            List<Dish> dishes = await _dishRepository.FindAsync(predicate);
+
+            List<string> recipeIds = dishes.Select(d => d.RecipeId).ToList();
+            List<Recipe> recipes = await _recipeRepository.FindAsync(r => recipeIds.Contains(r.Id));
+
+            return dishes.Select(dish => new DishDto.ResponseModel
+            {
+                Id = dish.Id,
+                Day = dish.Day.ToShortDateString(),
+                UserId = dish.UserId,
+                DishType = dish.DishType.ToString(),
+                RecipeId = recipes.FirstOrDefault(r => r.Id == dish.RecipeId)?.Id,
+                RecipeTitle = recipes.FirstOrDefault(r => r.Id == dish.RecipeId)?.Title
+            }).ToList();
         }
-        public async Task<DishDto?> GetAsync(string id)
-        {
-            DishDto dishAgregate = new DishDto();
-            Dish dish = await _dishRepository.FirstOrDefaultAsync(x => x.Id == id);
-            if (dish == null)
-                throw new Exception($"Not found dish with id {id}");
 
-            dishAgregate.Id = id;
-            dishAgregate.Recipe = await _recipeRepository.FirstOrDefaultAsync(x => x.Id == dish.RecipeId);
-
-            return dishAgregate;
-
-        }
-
-        public async Task CreateAsync(Dish newDish)
+        public async Task<string> CreateAsync(DishDto.RequestModel newDish)
         {
             var recipe = await _recipeRepository.FirstOrDefaultAsync(x => x.Id == newDish.RecipeId);
             if (recipe == null)
                 throw new Exception($"Not found recepy with id {newDish.RecipeId}");
 
-            await _dishRepository.AddAsync(newDish);
+            var dishTypeEnum = EnumHelper.Parse<Dish.DishTypeEnum>(newDish.DishType);
+
+            DateTime day = DateHelper.ToDateTime(newDish.Day);
+
+            Dish dish = new()
+            {
+                Day = day,
+                DishType = dishTypeEnum,
+                RecipeId = newDish.RecipeId ?? "",
+                UserId = newDish.UserId ?? "",
+            };
+
+            await _dishRepository.AddAsync(dish);
+            return dish.Id ?? "";
         }
-
-        //public async Task UpdateAsync(string id, Dish updatedDish) =>
-        //    await _dishRepository.ReplaceOneAsync(x => x.Id == id, updatedDish);
-
-        //public async Task RemoveAsync(string id) =>
-        //    await _dishRepository.DeleteOneAsync(x => x.Id == id);
     }
 }
