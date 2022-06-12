@@ -10,6 +10,8 @@
                 bool dayParseResuly = DateTime.TryParse(date, out day);
                 if (!dayParseResuly)
                     throw new Exception($"Day format is not correct, format example: dd-mm-yyyy");
+
+                day = DateTime.SpecifyKind(day, DateTimeKind.Utc);
             }
             return day;
         }
