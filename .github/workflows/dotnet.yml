@@ -20,6 +20,6 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore "./src/API.MenuPlanner.sln"
     - name: Build
-      run: dotnet build --no-restore "./src/API.MenuPlanner.sln"
+      run: dotnet build "./src/API.MenuPlanner.sln" --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test "./src/API.MenuPlanner.sln" --no-build --verbosity normal
