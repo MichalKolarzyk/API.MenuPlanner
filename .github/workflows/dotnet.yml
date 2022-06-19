@@ -17,8 +17,8 @@ jobs:
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 5.0.x
-    - name: Restore dependencies "./src/API.MenuPlanner.sln"
-      run: dotnet restore
+    - name: Restore dependencies
+      run: dotnet restore "./src/API.MenuPlanner.sln"
     - name: Build
       run: dotnet build --no-restore
     - name: Test
