@@ -63,5 +63,11 @@ namespace Api.MenuPlannerTest.Services
             updatedRecipe.Description.Should().BeEquivalentTo(newRecipe.Description);
             updatedRecipe.Title.Should().BeEquivalentTo("");
         }
+
+        [Fact]
+        public void TestShouldFaild()
+        {
+            false.Should().BeTrue();
+        }
     }
 }
