@@ -18,8 +18,8 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Restore dependencies
-      run: dotnet restore "./src/API.MenuPlanner.sln"
+      run: dotnet restore "./src"
     - name: Build
-      run: dotnet build "./src/API.MenuPlanner.sln" --no-restore
+      run: dotnet build "./src" --no-restore
     - name: Test
-      run: dotnet test "./src/Api.MenuPlannerTest/Api.MenuPlannerTest.csproj" --verbosity normal
+      run: dotnet test "./src" --verbosity normal
