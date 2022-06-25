@@ -1,4 +1,6 @@
-﻿namespace API.MenuPlanner.Helpers
+﻿using API.MenuPlanner.Responses;
+
+namespace API.MenuPlanner.Helpers
 {
     public static class EnumHelper
     {
@@ -8,7 +10,7 @@
             value = value?.ToLower();
             bool parseSucceed = Enum.TryParse<T>(value ?? "", out T enumValue);
             if (!parseSucceed)
-                throw new Exception($"Could not convert {value} to {typeof(T)}.");
+                throw new ExceptionResponse.BadRequestException($"Could not convert {value} to {typeof(T)}.");
 
             return enumValue;
         }

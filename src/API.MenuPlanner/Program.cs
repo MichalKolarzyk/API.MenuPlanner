@@ -15,12 +15,12 @@ IConfigurationSection authenticationSettingsSection = builder.Configuration.GetS
 AppSettingsModels.AuthenticationSettings authenticationSettings = new AppSettingsModels.AuthenticationSettings();
 authenticationSettingsSection.Bind(authenticationSettings);
 
-//builder.Services.AddAuthorization(options =>
-//{
-//    options.AddPolicy("Admin", builder => builder.RequireRole("Admin"));
-//    options.AddPolicy("Creator", builder => builder.RequireRole("Admin", "Creator"));
-//    options.AddPolicy("Viewer", builder => builder.RequireRole("Admin", "Creator", "Viewer"));
-//});
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin", builder => builder.RequireRole("Admin"));
+    options.AddPolicy("Creator", builder => builder.RequireRole("Admin", "Creator"));
+    options.AddPolicy("Viewer", builder => builder.RequireRole("Admin", "Creator", "Viewer"));
+});
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -39,6 +39,7 @@ builder.Services.AddSingleton<IRepository<User>, UserRepository>();
 builder.Services.AddSingleton<DishService>();
 builder.Services.AddSingleton<RecipeService>();
 builder.Services.AddSingleton<UserService>();
+builder.Services.AddSingleton<ErrorService>();
 builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddSingleton(authenticationSettings);
 
