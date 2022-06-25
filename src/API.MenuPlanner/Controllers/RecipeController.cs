@@ -59,16 +59,5 @@ namespace API.MenuPlanner.Controllers
             return NoContent();
         }
 
-        [Route("/error")]
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public IActionResult HendleError([FromServices] IHostEnvironment hostEnvironment)
-        {
-            var exceptionHandlerFeature = HttpContext.Features.Get<IExceptionHandlerFeature>();
-
-            return Problem(
-                detail: exceptionHandlerFeature?.Error.Message,
-                title: exceptionHandlerFeature?.Error.Source);
-        }
-
     }
 }

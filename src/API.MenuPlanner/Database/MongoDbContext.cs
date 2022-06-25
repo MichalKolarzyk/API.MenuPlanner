@@ -10,7 +10,11 @@ namespace API.MenuPlanner.Database
         private MongoClient _mongoClient { get; set; }
         public MongoDbContext(IOptions<MenuPlannerDatabaseSettings> databaseSettings)
         {
-            _mongoClient = new MongoClient(databaseSettings.Value.ConnectionString);
+            var mongoClientSettings = MongoClientSettings.FromConnectionString(databaseSettings.Value.ConnectionString);
+            mongoClientSettings.ServerSelectionTimeout = TimeSpan.FromSeconds(3);
+
+            _mongoClient = new MongoClient(mongoClientSettings);
+
             _db = _mongoClient.GetDatabase(databaseSettings.Value.DatabaseName);
         }
         public IMongoCollection<T> GetCollection<T>(string collectionName)

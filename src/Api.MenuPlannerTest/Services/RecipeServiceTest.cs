@@ -13,13 +13,13 @@ namespace Api.MenuPlannerTest.Services
 
     public class RecipeServiceTest
     {
-        private RepositoryTestBase<Recipe> _recipeRepository;
+        private RepositoryTestBase<Recipe>? _recipeRepository;
 
-        RecipeService _recipeService;
+        RecipeService? _recipeService;
 
-        private List<Recipe> _recipes;
-        private Recipe _recipe1;
-        private Recipe _recipe2;
+        private List<Recipe>? _recipes;
+        private Recipe? _recipe1;
+        private Recipe? _recipe2;
 
         private async Task Initialize()
         {
@@ -54,12 +54,12 @@ namespace Api.MenuPlannerTest.Services
             await Initialize();
             var newRecipe = new Recipe
             {
-                Id = _recipe1.Id,
+                Id = _recipe1?.Id,
                 Description = "new description",
             };
-            await _recipeService.UpdateRecipeAsync(newRecipe);
+            await _recipeService?.UpdateRecipeAsync(newRecipe);
 
-            Recipe updatedRecipe = await _recipeRepository.FirstOrDefaultAsync(r => r.Id == _recipe1.Id);
+            Recipe updatedRecipe = await _recipeRepository?.FirstOrDefaultAsync(r => r.Id == _recipe1.Id);
             updatedRecipe.Description.Should().BeEquivalentTo(newRecipe.Description);
             updatedRecipe.Title.Should().BeEquivalentTo("");
         }

@@ -1,6 +1,7 @@
 ﻿using API.MenuPlanner.Dtos;
 using API.MenuPlanner.Entities;
 using API.MenuPlanner.Repositories;
+using API.MenuPlanner.Responses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
@@ -28,7 +29,7 @@ namespace API.MenuPlanner.Services
             User existingUser = await _userRepository.FirstOrDefaultAsync(u => u.Email == user.Email);
             if(existingUser != null)
             {
-                throw new Exception($"Email {user.Email} is taken");
+                throw new ExceptionResponse.ForbidException($"Email {user.Email} is taken");
             }
 
             User newUser = new User

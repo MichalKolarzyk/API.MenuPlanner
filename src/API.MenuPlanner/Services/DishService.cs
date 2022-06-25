@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System.Linq.Expressions;
 using API.MenuPlanner.Helpers;
+using API.MenuPlanner.Responses;
 
 namespace API.MenuPlanner.Services
 {
@@ -50,7 +51,7 @@ namespace API.MenuPlanner.Services
         {
             var recipe = await _recipeRepository.FirstOrDefaultAsync(x => x.Id == newDish.RecipeId);
             if (recipe == null)
-                throw new Exception($"Not found recepy with id {newDish.RecipeId}");
+                throw new ExceptionResponse.NotFoundException($"Not found recepy with id {newDish.RecipeId}");
 
             var dishTypeEnum = EnumHelper.Parse<Dish.DishTypeEnum>(newDish.DishType);
 
