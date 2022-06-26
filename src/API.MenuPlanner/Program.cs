@@ -1,6 +1,7 @@
 using API.MenuPlanner;
 using API.MenuPlanner.Database;
 using API.MenuPlanner.Entities;
+using API.MenuPlanner.Helpers;
 using API.MenuPlanner.Repositories;
 using API.MenuPlanner.Services;
 using Microsoft.AspNetCore.Identity;
@@ -11,6 +12,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 IConfigurationSection menuPlannerDatabaseSection = builder.Configuration.GetSection(AppSettingsModels.SectionNames.MenuPlannerDatabase);
 IConfigurationSection authenticationSettingsSection = builder.Configuration.GetSection(AppSettingsModels.SectionNames.AuthenticationSettings);
+
+AppSettingsModels.MenuPlannerDatabase menuPlannerDatabaseSettings = new AppSettingsModels.MenuPlannerDatabase();
+menuPlannerDatabaseSection.Bind(menuPlannerDatabaseSettings);
+
+string? connectionString = EnvironmentVariableHelper.TryGetValue(EnvironmentVariableHelper.EnvironmentVariable.MenuPlannerConnectionString);
+if (!string.IsNullOrEmpty(connectionString))
+    menuPlannerDatabaseSettings.ConnectionString = connectionString;
 
 AppSettingsModels.AuthenticationSettings authenticationSettings = new AppSettingsModels.AuthenticationSettings();
 authenticationSettingsSection.Bind(authenticationSettings);

@@ -90,11 +90,5 @@ namespace Api.MenuPlannerTest.Services
             var recipes = await _recipeService.GetRecipesAsync(new API.MenuPlanner.Requests.GetRecipesRequest());
             recipes.Count.Should().Be(2);
         }
-
-        [Fact]
-        public void SimpleTest()
-        {
-            true.Should().BeTrue();
-        }
     }
 }
