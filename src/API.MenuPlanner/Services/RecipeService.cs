@@ -21,9 +21,10 @@ namespace API.MenuPlanner.Services
         {
             _recipeRepository = recipeRepository;
         }
-        public async Task CreateAsync(Recipe newRecipe)
+        public async Task<string?> CreateAsync(Recipe newRecipe)
         {
             await _recipeRepository.AddAsync(newRecipe);
+            return newRecipe.Id;
         }
 
         public async Task<Recipe> GetRecipeAsync(string id)

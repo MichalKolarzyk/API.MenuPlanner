@@ -1,10 +1,9 @@
 ﻿using API.MenuPlanner.Entities;
+using API.MenuPlanner.Repositories;
 using API.MenuPlanner.Services;
 using FluentAssertions;
-using System;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -13,39 +12,38 @@ namespace Api.MenuPlannerTest.Services
 
     public class RecipeServiceTest
     {
-        private RepositoryTestBase<Recipe>? _recipeRepository;
+        readonly IRepository<Recipe> _recipeRepository;
+        readonly RecipeService _recipeService;
 
-        RecipeService? _recipeService;
+        private Recipe _recipe1;
+        private Recipe _recipe2;
 
-        private List<Recipe>? _recipes;
-        private Recipe? _recipe1;
-        private Recipe? _recipe2;
+        public RecipeServiceTest()
+        {
+            var services = TestEnvironment.GetServices();
+            _recipeService = services.GetRequiredService<RecipeService>();
+            _recipeRepository = services.GetRequiredService<IRepository<Recipe>>();
+        }
 
         private async Task Initialize()
         {
-            _recipeRepository = new RepositoryTestBase<Recipe>();
-            _recipeService = new RecipeService(_recipeRepository);
-
+            TestEnvironment.DropDatabases();
             _recipe1 = new Recipe
             {
-                Id = "recipeId1",
                 Description = "description recipe 1",
                 Title = "title recipe 1"
             };
 
             _recipe2 = new Recipe
             {
-                Id = "recipeId2",
                 Description = "description recipe 2",
                 Title = "title recipe 2"
             };
 
-            _recipes = new List<Recipe>
+            await _recipeRepository.AddRangeAsync(new List<Recipe>
             {
                 _recipe1, _recipe2
-            };
-
-            await _recipeRepository.AddRangeAsync(_recipes);
+            });
         }
 
         [Fact]
@@ -57,11 +55,40 @@ namespace Api.MenuPlannerTest.Services
                 Id = _recipe1?.Id,
                 Description = "new description",
             };
-            await _recipeService?.UpdateRecipeAsync(newRecipe);
+            await _recipeService.UpdateRecipeAsync(newRecipe);
 
-            Recipe updatedRecipe = await _recipeRepository?.FirstOrDefaultAsync(r => r.Id == _recipe1.Id);
+            Recipe updatedRecipe = await _recipeRepository.FirstOrDefaultAsync(r => r.Id == _recipe1.Id);
             updatedRecipe.Description.Should().BeEquivalentTo(newRecipe.Description);
             updatedRecipe.Title.Should().BeEquivalentTo("");
+        }
+
+        [Fact]
+        public async Task GetRecipeAsync_ShouldReturnGoodRecipe()
+        {
+            await Initialize();
+            var recipe = await _recipeService.GetRecipeAsync(_recipe1.Id);
+            recipe.Should().NotBeNull();
+            recipe.Description.Should().Be(_recipe1.Description);
+        }
+
+        [Fact]
+        public async Task CreateAsync_ShouldCreateRecipe()
+        {
+            await Initialize();
+            string? id = await _recipeService.CreateAsync(new Recipe()
+            {
+                Description = "new Recipe",
+                Title = "new Recipe",
+            });
+            id.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task GetRecipesAsync_ShouldGetInitializedRecipes()
+        {
+            await Initialize();
+            var recipes = await _recipeService.GetRecipesAsync(new API.MenuPlanner.Requests.GetRecipesRequest());
+            recipes.Count.Should().Be(2);
         }
     }
 }

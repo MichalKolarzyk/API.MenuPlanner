@@ -22,7 +22,6 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("Viewer", builder => builder.RequireRole("Admin", "Creator", "Viewer"));
 });
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -42,6 +41,7 @@ builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<ErrorService>();
 builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddSingleton(authenticationSettings);
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthentication(option =>
 {

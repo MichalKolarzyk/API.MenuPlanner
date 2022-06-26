@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Api.MenuPlannerTest": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+﻿version: "3.9"
+services:
+
+  #api: 
+  #  build: ./API.MenuPlanner
+  #  environment:
+  #    - ASPNETCORE_ENVIRONMENT=Development
+  #    - ASPNETCORE_URLS=http://+:443;http://+:80
+  #  ports:
+  #    - "8000:80"
+  #  container_name: "MenuPlannerAPI"
+  #  networks:
+  #    - menu_planner_test_net
+
+  mongo:
+    container_name: "mongo_test"
+    image: "mongo"
+    restart: always
+    ports:
+      - "27019:27017"
+    networks:
+      - menu_planner_test_net
+
+  test:
+    build:
+      context: .
+      dockerfile: ./Api.MenuPlannerTest/Dockerfile
+    depends_on:
+      - mongo
+    environment:
+      - MenuPlannerConnectionString=mongodb://mongo_test:27017
+      
+    networks:
+      - menu_planner_test_net
+
+networks:
+  menu_planner_test_net:

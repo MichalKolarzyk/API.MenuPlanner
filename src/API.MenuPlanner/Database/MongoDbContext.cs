@@ -14,7 +14,7 @@ namespace API.MenuPlanner.Database
             mongoClientSettings.ServerSelectionTimeout = TimeSpan.FromSeconds(3);
 
             _mongoClient = new MongoClient(mongoClientSettings);
-
+            
             _db = _mongoClient.GetDatabase(databaseSettings.Value.DatabaseName);
         }
         public IMongoCollection<T> GetCollection<T>(string collectionName)
@@ -23,6 +23,11 @@ namespace API.MenuPlanner.Database
                 throw new Exception("You should define collectionName");
 
             return _db.GetCollection<T>(collectionName);
+        }
+
+        public MongoClient GetClient()
+        {
+            return _mongoClient;
         }
     }
 }
