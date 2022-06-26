@@ -8,7 +8,7 @@ namespace API.MenuPlanner.Database
     {
         private IMongoDatabase _db { get; set; }
         private MongoClient _mongoClient { get; set; }
-        public MongoDbContext(IOptions<MenuPlannerDatabaseSettings> databaseSettings)
+        public MongoDbContext(IOptions<AppSettingsModels.MenuPlannerDatabase> databaseSettings)
         {
             var mongoClientSettings = MongoClientSettings.FromConnectionString(databaseSettings.Value.ConnectionString);
             mongoClientSettings.ServerSelectionTimeout = TimeSpan.FromSeconds(3);

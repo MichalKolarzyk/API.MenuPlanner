@@ -23,7 +23,7 @@ namespace Api.MenuPlannerTest
 
         readonly static Dictionary<Variable, string> _defaultVariables = new Dictionary<Variable, string>()
         {
-            {Variable.MenuPlannerConnectionString, "mongodb://localhost:27019" },
+            {Variable.MenuPlannerConnectionString, "mongodb://localhost:27020" },
         };
 
     }
