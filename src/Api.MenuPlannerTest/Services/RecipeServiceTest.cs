@@ -94,7 +94,7 @@ namespace Api.MenuPlannerTest.Services
         [Fact]
         public void SimpleTest()
         {
-            true.Should().BeTrue();
+            true.Should().BeFalse();
         }
     }
 }
