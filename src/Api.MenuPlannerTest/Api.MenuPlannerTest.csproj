@@ -32,4 +32,8 @@
     <ProjectReference Include="..\API.MenuPlanner\API.MenuPlanner.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="..\.dockerignore" />
+  </ItemGroup>
+
 </Project>

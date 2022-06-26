@@ -7,9 +7,10 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["API.MenuPlanner.csproj", ""]
-RUN dotnet restore "API.MenuPlanner.csproj"
+COPY ["API.MenuPlanner/API.MenuPlanner.csproj", "API.MenuPlanner/"]
+RUN dotnet restore "API.MenuPlanner/API.MenuPlanner.csproj"
 COPY . .
+WORKDIR "/src/API.MenuPlanner"
 RUN dotnet build "API.MenuPlanner.csproj" -c Release -o /app/build
 
 FROM build AS publish
