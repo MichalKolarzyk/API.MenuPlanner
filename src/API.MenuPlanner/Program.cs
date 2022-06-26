@@ -1,6 +1,7 @@
 using API.MenuPlanner;
 using API.MenuPlanner.Database;
 using API.MenuPlanner.Entities;
+using API.MenuPlanner.Extensions;
 using API.MenuPlanner.Helpers;
 using API.MenuPlanner.Repositories;
 using API.MenuPlanner.Services;
@@ -11,15 +12,10 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 IConfigurationSection menuPlannerDatabaseSection = builder.Configuration.GetSection(AppSettingsModels.SectionNames.MenuPlannerDatabase);
-IConfigurationSection authenticationSettingsSection = builder.Configuration.GetSection(AppSettingsModels.SectionNames.AuthenticationSettings);
-
 AppSettingsModels.MenuPlannerDatabase menuPlannerDatabaseSettings = new AppSettingsModels.MenuPlannerDatabase();
 menuPlannerDatabaseSection.Bind(menuPlannerDatabaseSettings);
 
-string? connectionString = EnvironmentVariableHelper.TryGetValue(EnvironmentVariableHelper.EnvironmentVariable.MenuPlannerConnectionString);
-if (!string.IsNullOrEmpty(connectionString))
-    menuPlannerDatabaseSettings.ConnectionString = connectionString;
-
+IConfigurationSection authenticationSettingsSection = builder.Configuration.GetSection(AppSettingsModels.SectionNames.AuthenticationSettings);
 AppSettingsModels.AuthenticationSettings authenticationSettings = new AppSettingsModels.AuthenticationSettings();
 authenticationSettingsSection.Bind(authenticationSettings);
 
@@ -35,7 +31,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.Configure<MenuPlannerDatabaseSettings>(menuPlannerDatabaseSection);
+builder.Services.AddConfiguration(menuPlannerDatabaseSettings);
+//builder.Services.Configure<MenuPlannerDatabaseSettings>(menuPlannerDatabaseSection);
 
 //builder.Services.AddAuthorization();
 builder.Services.AddSingleton<IMongoDbContext, MongoDbContext>();
