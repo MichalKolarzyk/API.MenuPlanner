@@ -31,6 +31,7 @@ builder.Services.AddAuthorization(options =>
 });
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddLogging(builder => builder.AddSeq(apiKey: "MenuPlannerAPI"));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -90,11 +91,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseExceptionHandler("/error");
 app.UseHttpsRedirection();
 app.UseCors("localhost");
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseExceptionHandler("/error");
 
 app.MapControllers();
 

@@ -17,6 +17,14 @@ services:
     networks:
       - menu_planner_test_net
 
+  seq:
+    image: datalust/seq:latest
+    ports:
+      - 5341:5341
+      - 5342:80
+    environment:
+      - ACCEPT_EULA=Y
+
   test:
     build:
       context: .
