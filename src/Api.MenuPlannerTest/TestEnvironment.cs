@@ -1,4 +1,5 @@
-﻿using API.MenuPlanner.Database;
+﻿using API.MenuPlanner;
+using API.MenuPlanner.Database;
 using API.MenuPlanner.Entities;
 using API.MenuPlanner.Repositories;
 using API.MenuPlanner.Services;
@@ -13,7 +14,7 @@ namespace Api.MenuPlannerTest
     {
         readonly static WebApplication _webApplication;
 
-        private readonly static IOptions<MenuPlannerDatabaseSettings> _databaseOptions = GetDatabaseOptions();
+        private readonly static IOptions<AppSettingsModels.MenuPlannerDatabase> _databaseOptions = GetDatabaseOptions();
 
         static TestEnvironment()
         {
@@ -38,11 +39,11 @@ namespace Api.MenuPlannerTest
         }
 
 
-        private static IOptions<MenuPlannerDatabaseSettings> GetDatabaseOptions()
+        private static IOptions<AppSettingsModels.MenuPlannerDatabase> GetDatabaseOptions()
         {
             var connectionString = TestEnvironmentVariables.GetEnvironmentVariableValue(TestEnvironmentVariables.Variable.MenuPlannerConnectionString);
 
-            return Options.Create(new MenuPlannerDatabaseSettings()
+            return Options.Create(new AppSettingsModels.MenuPlannerDatabase()
             {
                 DatabaseName = "MenuPlanner",
                 ConnectionString = connectionString,

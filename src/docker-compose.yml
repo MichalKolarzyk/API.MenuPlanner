@@ -9,7 +9,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:443;http://+:80
-      - MenuPlannerConnectionString=mongodb://localhost:27017
+      - MENU_PLANNER_CONNECTION_STRING=mongodb://localhost:27017
     ports:
       - 8000:80
       - 8001:81
