@@ -1,6 +1,7 @@
 ﻿using API.MenuPlanner;
 using API.MenuPlanner.Database;
 using API.MenuPlanner.Entities;
+using API.MenuPlanner.Helpers;
 using API.MenuPlanner.Repositories;
 using API.MenuPlanner.Services;
 using Microsoft.AspNetCore.Builder;
@@ -14,12 +15,12 @@ namespace Api.MenuPlannerTest
     {
         readonly static WebApplication _webApplication;
 
-        private readonly static IOptions<AppSettingsModels.MenuPlannerDatabase> _databaseOptions = GetDatabaseOptions();
+        private readonly static ConfigurationModel _configuration = GetConfiguration();
 
         static TestEnvironment()
         {
             var builder = WebApplication.CreateBuilder();
-            builder.Services.AddSingleton(_databaseOptions);
+            builder.Services.AddSingleton(_configuration);
             builder.Services.AddSingleton<RecipeService>();
             builder.Services.AddSingleton<IRepository<Recipe>, RecipeRepository>();
             builder.Services.AddSingleton<IMongoDbContext, MongoDbContext>();
@@ -32,22 +33,16 @@ namespace Api.MenuPlannerTest
             return _webApplication.Services;
         }
 
-        public static void DropDatabases()
+        private static ConfigurationModel GetConfiguration()
         {
-            IMongoDbContext mongodbContext = GetServices().GetRequiredService<IMongoDbContext>();
-            mongodbContext.GetClient().DropDatabase(_databaseOptions.Value.DatabaseName);
-        }
-
-
-        private static IOptions<AppSettingsModels.MenuPlannerDatabase> GetDatabaseOptions()
-        {
-            var connectionString = TestEnvironmentVariables.GetEnvironmentVariableValue(TestEnvironmentVariables.Variable.MenuPlannerConnectionString);
-
-            return Options.Create(new AppSettingsModels.MenuPlannerDatabase()
+            return new ConfigurationModel()
             {
-                DatabaseName = "MenuPlanner",
-                ConnectionString = connectionString,
-            });
+                DatabaseName = "MenuPlannerTest",
+                ConnectionString = Environment.GetEnvironmentVariable(EnvironmentVariableHelper.MENU_PLANNER_CONNECTION_STRING) ?? "mongodb://localhost:27017",
+                JwtExpireSeconds = 1000000,
+                JwtIssuer = "http://menuplannerapi.com",
+                JwtKey = "PRIVATE_KEY_DONT_SHARE",
+            };
         }
     }
 }

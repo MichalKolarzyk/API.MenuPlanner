@@ -3,6 +3,7 @@ using API.MenuPlanner.Entities;
 using API.MenuPlanner.Repositories;
 using API.MenuPlanner.Responses;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -15,17 +16,17 @@ namespace API.MenuPlanner.Services
     {
         IRepository<User> _userRepository;
         IPasswordHasher<User> _passwordHasher;
-        AppSettingsModels.AuthenticationSettings _authenticationSettings;
+        ConfigurationModel _configuration;
         HttpContextService _httpContextService;
 
         public UserService(IRepository<User> userRepository,
             IPasswordHasher<User> passwordHasher,
-            AppSettingsModels.AuthenticationSettings authentiactionSettings, 
+            ConfigurationModel configuration, 
             HttpContextService httpContextService)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
-            _authenticationSettings = authentiactionSettings;
+            _configuration = configuration;
             _httpContextService = httpContextService;
         }
 
@@ -67,13 +68,13 @@ namespace API.MenuPlanner.Services
                 new Claim(ClaimTypes.Role, user.Role.ToString())
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.JwtKey));
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.Now.AddSeconds(_authenticationSettings.JwtExpireSeconds);
+            var expires = DateTime.Now.AddSeconds(_configuration.JwtExpireSeconds);
 
             var token = new JwtSecurityToken(
-                _authenticationSettings.JwtIssuer,
-                _authenticationSettings.JwtIssuer,
+                _configuration.JwtIssuer,
+                _configuration.JwtIssuer,
                 claims,
                 expires: expires,
                 signingCredentials: cred);
@@ -106,20 +107,6 @@ namespace API.MenuPlanner.Services
                 LastName = user.LastName,
                 Role = user.Role.ToString(),
             };
-        }
-
-        private JwtSecurityToken GetToken(StringValues authorizationHeader)
-        {
-            string header = authorizationHeader.FirstOrDefault();
-            if (header == null)
-                return null;
-
-            string token = header.Split(" ")[1];
-
-            var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-            jwtSecurityTokenHandler.ReadJwtToken(token);
-
-            return jwtSecurityTokenHandler.ReadJwtToken(token);
         }
     }
 }

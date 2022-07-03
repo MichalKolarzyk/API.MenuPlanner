@@ -44,7 +44,6 @@ namespace API.MenuPlanner.Services
             if (request.SortBy != null)
                 sortBySelector = _sortKeySelectors[request.SortBy];
 
-
             List<Recipe> recipes = await _recipeRepository.FindAsync(expression, request?.Skip, request?.Take, sortBySelector);
             return recipes;
         }

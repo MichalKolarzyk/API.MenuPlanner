@@ -26,7 +26,7 @@ namespace API.MenuPlanner.Dtos
     {
         public string? FirstDay { get; set; }
         public int NumberOfDays { get; set; }
-        public List<string>? UserIds { get; set; }
+        public List<string> UserIds { get; set; } = new List<string>();
     }
 
 }

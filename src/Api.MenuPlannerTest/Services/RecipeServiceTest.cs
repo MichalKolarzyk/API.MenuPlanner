@@ -10,24 +10,23 @@ using Xunit;
 namespace Api.MenuPlannerTest.Services
 {
 
-    public class RecipeServiceTest
+    public class RecipeServiceTest : BaseServiceTest
     {
         readonly IRepository<Recipe> _recipeRepository;
         readonly RecipeService _recipeService;
 
-        private Recipe _recipe1;
-        private Recipe _recipe2;
+        private Recipe? _recipe1;
+        private Recipe? _recipe2;
 
-        public RecipeServiceTest()
+        public RecipeServiceTest() : base()
         {
-            var services = TestEnvironment.GetServices();
-            _recipeService = services.GetRequiredService<RecipeService>();
-            _recipeRepository = services.GetRequiredService<IRepository<Recipe>>();
+            _recipeService = GetService<RecipeService>();
+            _recipeRepository = GetService<IRepository<Recipe>>();
         }
 
         private async Task Initialize()
         {
-            TestEnvironment.DropDatabases();
+            DropDatabases();
             _recipe1 = new Recipe
             {
                 Description = "description recipe 1",
