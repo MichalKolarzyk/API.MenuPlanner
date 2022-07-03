@@ -12,7 +12,7 @@ namespace API.MenuPlanner.Dtos
             public string? RecipeId { get; set; }
         }
 
-        public class ResponseModel
+        public class DishProjectionModel
         {
             public string? Id { get; set; }
             public string? UserId { get; set; }

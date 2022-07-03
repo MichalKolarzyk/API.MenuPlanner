@@ -16,12 +16,17 @@ namespace API.MenuPlanner.Services
         IRepository<User> _userRepository;
         IPasswordHasher<User> _passwordHasher;
         AppSettingsModels.AuthenticationSettings _authenticationSettings;
+        HttpContextService _httpContextService;
 
-        public UserService(IRepository<User> userRepository, IPasswordHasher<User> passwordHasher, AppSettingsModels.AuthenticationSettings authentiactionSettings)
+        public UserService(IRepository<User> userRepository,
+            IPasswordHasher<User> passwordHasher,
+            AppSettingsModels.AuthenticationSettings authentiactionSettings, 
+            HttpContextService httpContextService)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _authenticationSettings = authentiactionSettings;
+            _httpContextService = httpContextService;
         }
 
         public async Task RegisterUserAsync(User user)
@@ -83,11 +88,10 @@ namespace API.MenuPlanner.Services
             return loginResponse;
         }
 
-        public async Task<UserDto> Profile(StringValues authorizationHeader)
+        public async Task<UserDto> Profile()
         {
-            var token = GetToken(authorizationHeader);
-            string userid = token.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-            if(userid == null)
+            string? userid = _httpContextService.UserId;
+            if (userid == null)
                 throw new Exception("Your token is not correct");
 
             User user = await _userRepository.FirstOrDefaultAsync(u => u.Id == userid);

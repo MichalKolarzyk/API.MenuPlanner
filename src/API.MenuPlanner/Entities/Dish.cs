@@ -11,6 +11,8 @@ namespace API.MenuPlanner.Entities
         public string UserId { get; set; } = string.Empty;
         public DishTypeEnum DishType { get; set; }
         public DateTime Day { get; set; }
+
+        [BsonRepresentation(BsonType.ObjectId)]
         public string RecipeId { get; set; } = string.Empty;
 
 

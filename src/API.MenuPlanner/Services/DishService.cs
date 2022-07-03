@@ -7,6 +7,7 @@ using MongoDB.Driver;
 using System.Linq.Expressions;
 using API.MenuPlanner.Helpers;
 using API.MenuPlanner.Responses;
+using API.MenuPlanner.Aggregates;
 
 namespace API.MenuPlanner.Services
 {
@@ -14,36 +15,35 @@ namespace API.MenuPlanner.Services
     {
         private readonly IRepository<Dish> _dishRepository;
         private readonly IRepository<Recipe> _recipeRepository;
+        private readonly IRepositoryRead<DishAggregate> _dishAggregateRepository;
 
-        public DishService(IRepository<Dish> dishRepository, IRepository<Recipe> recipeRepository)
+        public DishService(IRepository<Dish> dishRepository, IRepository<Recipe> recipeRepository, IRepositoryRead<DishAggregate> dishAggregateRepository)
         {
             _dishRepository = dishRepository;
             _recipeRepository = recipeRepository;
+            _dishAggregateRepository = dishAggregateRepository;
         }
 
-        public async Task<List<DishDto.ResponseModel>> GetAsync(GetDishesRequest request)
+        public async Task<List<DishDto.DishProjectionModel>> GetAsync(GetDishesRequest request)
         {
             DateTime firstDay = DateHelper.ToDateTime(request.FirstDay);
             DateTime LastDay = firstDay.AddDays(request.NumberOfDays);
 
-            Expression<Func<Dish, bool>> predicate =
+            Expression<Func<DishAggregate, bool>> predicate =
                 d => request.UserIds.Contains(d.UserId)
                 && d.Day >= firstDay
                 && d.Day <= LastDay;
 
-            List<Dish> dishes = await _dishRepository.FindAsync(predicate);
+            List<DishAggregate> dishes = await _dishAggregateRepository.FindAsync(predicate);
 
-            List<string> recipeIds = dishes.Select(d => d.RecipeId).ToList();
-            List<Recipe> recipes = await _recipeRepository.FindAsync(r => recipeIds.Contains(r.Id));
-
-            return dishes.Select(dish => new DishDto.ResponseModel
+            return dishes.Select(dish => new DishDto.DishProjectionModel
             {
                 Id = dish.Id,
                 Day = dish.Day.ToShortDateString(),
                 UserId = dish.UserId,
                 DishType = dish.DishType.ToString(),
-                RecipeId = recipes.FirstOrDefault(r => r.Id == dish.RecipeId)?.Id,
-                RecipeTitle = recipes.FirstOrDefault(r => r.Id == dish.RecipeId)?.Title
+                RecipeId = dish.Recipe?.Id,
+                RecipeTitle = dish.Recipe?.Title,
             }).ToList();
         }
 

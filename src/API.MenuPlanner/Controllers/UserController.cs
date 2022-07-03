@@ -35,8 +35,7 @@ namespace API.MenuPlanner.Controllers
         [HttpGet("profile")]
         public async Task<ActionResult<UserDto>> Profile()
         {
-            var authorizationHeader = HttpContext.Request.Headers[HeaderNames.Authorization];
-            UserDto user = await _userService.Profile(authorizationHeader);
+            UserDto user = await _userService.Profile();
             return Ok(user);
         }
     }

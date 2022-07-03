@@ -1,4 +1,5 @@
-﻿using API.MenuPlanner.Dtos;
+﻿using API.MenuPlanner.Aggregates;
+using API.MenuPlanner.Dtos;
 using API.MenuPlanner.Entities;
 using API.MenuPlanner.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -19,7 +20,7 @@ namespace API.MenuPlanner.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<List<DishDto.ResponseModel>>> Get(GetDishesRequest request)
+        public async Task<ActionResult<List<DishDto.DishProjectionModel>>> Get(GetDishesRequest request)
         {
             return await _dishService.GetAsync(request);
         }
