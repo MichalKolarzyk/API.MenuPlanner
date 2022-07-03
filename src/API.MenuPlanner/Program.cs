@@ -1,10 +1,8 @@
 using API.MenuPlanner;
 using API.MenuPlanner.Aggregates;
 using API.MenuPlanner.Database;
-using API.MenuPlanner.Dtos;
 using API.MenuPlanner.Entities;
 using API.MenuPlanner.Extensions;
-using API.MenuPlanner.Helpers;
 using API.MenuPlanner.Repositories;
 using API.MenuPlanner.Services;
 using Microsoft.AspNetCore.Identity;
@@ -12,14 +10,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-
-IConfigurationSection menuPlannerDatabaseSection = builder.Configuration.GetSection(AppSettingsModels.SectionNames.MenuPlannerDatabase);
-AppSettingsModels.MenuPlannerDatabase menuPlannerDatabaseSettings = new AppSettingsModels.MenuPlannerDatabase();
-menuPlannerDatabaseSection.Bind(menuPlannerDatabaseSettings);
-
-IConfigurationSection authenticationSettingsSection = builder.Configuration.GetSection(AppSettingsModels.SectionNames.AuthenticationSettings);
-AppSettingsModels.AuthenticationSettings authenticationSettings = new AppSettingsModels.AuthenticationSettings();
-authenticationSettingsSection.Bind(authenticationSettings);
 
 builder.Services.AddAuthorization(options =>
 {
@@ -34,10 +24,8 @@ builder.Services.AddLogging(builder => builder.AddSeq(apiKey: "MenuPlannerAPI"))
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddConfiguration(menuPlannerDatabaseSettings);
-//builder.Services.Configure<MenuPlannerDatabaseSettings>(menuPlannerDatabaseSection);
+builder.Services.AddConfiguration(out var configuration);
 
-//builder.Services.AddAuthorization();
 builder.Services.AddSingleton<IMongoDbContext, MongoDbContext>();
 builder.Services.AddSingleton<IRepository<Dish>, DishRepository>();
 builder.Services.AddSingleton<IRepository<Recipe>, RecipeRepository>();
@@ -50,7 +38,6 @@ builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<ErrorService>();
 builder.Services.AddSingleton<HttpContextService>();
 builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
-builder.Services.AddSingleton(authenticationSettings);
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthentication(option =>
@@ -64,9 +51,9 @@ builder.Services.AddAuthentication(option =>
     cfg.SaveToken = true;
     cfg.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidIssuer = authenticationSettings.JwtIssuer,
-        ValidAudience = authenticationSettings.JwtIssuer,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey)),
+        ValidIssuer = configuration.JwtIssuer,
+        ValidAudience = configuration.JwtIssuer,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.JwtKey)),
     };
 });
 

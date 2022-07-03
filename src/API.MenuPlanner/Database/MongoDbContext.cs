@@ -8,14 +8,14 @@ namespace API.MenuPlanner.Database
     {
         private IMongoDatabase _db { get; set; }
         private MongoClient _mongoClient { get; set; }
-        public MongoDbContext(IOptions<AppSettingsModels.MenuPlannerDatabase> databaseSettings)
+        public MongoDbContext(ConfigurationModel configuration)
         {
-            var mongoClientSettings = MongoClientSettings.FromConnectionString(databaseSettings.Value.ConnectionString);
+            var mongoClientSettings = MongoClientSettings.FromConnectionString(configuration.ConnectionString);
             mongoClientSettings.ServerSelectionTimeout = TimeSpan.FromSeconds(3);
 
             _mongoClient = new MongoClient(mongoClientSettings);
             
-            _db = _mongoClient.GetDatabase(databaseSettings.Value.DatabaseName);
+            _db = _mongoClient.GetDatabase(configuration.DatabaseName);
         }
         public IMongoCollection<T> GetCollection<T>(string collectionName)
         {

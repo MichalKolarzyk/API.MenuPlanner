@@ -32,7 +32,7 @@ services:
     depends_on:
       - mongo
     environment:
-      - MenuPlannerConnectionString=mongodb://mongo_test:27017
+      - MENU_PLANNER_CONNECTION_STRING=mongodb://mongo_test:27017
     networks:
       - menu_planner_test_net
       
